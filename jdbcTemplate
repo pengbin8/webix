@@ -1,0 +1,48 @@
+package jdbctemplate.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+import jdbctemplate.domain.Layer;
+
+@Service
+public class LayerServiceImpl implements LayerService {
+
+	@Autowired
+    private JdbcTemplate jdbcTemplate;
+	
+	@Override
+	public List<Layer> list() {
+		List<Layer> queryForList = jdbcTemplate.query("select * from layer_t where APP_ID=105;",new BeanPropertyRowMapper<Layer>(Layer.class));
+		return queryForList;
+	}
+
+	@Override
+	public Layer get(long id) {
+		List<Layer> query = jdbcTemplate.query("select * from layer_t where id=?;",new Object[]{id},new BeanPropertyRowMapper<Layer>(Layer.class));
+		return query.get(0);
+	}
+
+	@Override
+	public void uodate(Layer layer) {
+		jdbcTemplate.update("");
+	}
+
+	@Override
+	public void insert(Layer layer) {
+		jdbcTemplate.update("");
+	}
+
+	@Override
+	public void delete(ArrayList<Long> ids) {
+		//jdbcTemplate.update("delete layer_t where id in (?)",new Object[]{String.join(ids,",")});
+	}
+
+
+
+}
