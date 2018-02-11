@@ -1,0 +1,49 @@
+package com.huawei.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class WaitNotify {
+
+	public volatile List<Object> objs = new ArrayList<>();
+
+	public synchronized int getSize() {
+
+		int size = objs.size();
+		if (size != 5) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} 
+		System.out.println("size=" + size);
+		notifyAll();
+		return size;
+	}
+
+	public synchronized void addObj(Object obj, int i) {
+		if (objs.size() == 5) {
+			notifyAll();
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} 
+		objs.add(obj);
+		System.out.println("add " + i);
+	}
+
+	public static void main(String[] args) {
+		WaitNotify wnf = new WaitNotify();
+		new Thread(() -> {
+			for (int i = 0; i < 10; i++) {
+				wnf.addObj(new Object(), i);
+			}
+		}).start();
+		new Thread(wnf::getSize).start();
+	}
+}
